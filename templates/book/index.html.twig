@@ -1,20 +1,38 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello BookController!{% endblock %}
+{% block title %}Book Warehouse{% endblock %}
+
+{% block stylesheets %}<link rel="stylesheet" href="/styles/main.css">{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <div class="warehouse-container">
+        <div class="warehouse-container__filters">
+            {% include "book/_filter_block.html.twig" with {
+                'title': 'Список книг',
+                'id': 'books-select',
+                'items': books
+            } %}
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+            {% include "book/_filter_block.html.twig" with {
+                'title': 'Список авторов',
+                'id': 'authors-select',
+                'items': authors
+            } %}
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/Users/darkknight/Projects/symf/book_warehouse/src/Controller/BookController.php</code></li>
-        <li>Your template at <code>/Users/darkknight/Projects/symf/book_warehouse/templates/book/index.html.twig</code></li>
-    </ul>
-</div>
+            {% include "book/_filter_block.html.twig" with {
+                'title': 'Список магазинов',
+                'id': 'stores-select',
+                'items': stores
+            } %}
+        </div>
+
+        <div class="showcase-section">
+            <h2>Витрина <span style="display: none" id="timer">⏳</span></h2>
+            <div id="showcase-container" class="showcase-grid">
+            </div>
+            <div id="empty-message" class="empty-message">Витрина пуста</div>
+        </div>
+    </div>
+    <script src="scripts/main.js"></script>
 {% endblock %}
+

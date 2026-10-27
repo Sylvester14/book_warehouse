@@ -1,0 +1,18 @@
+<div class="filter-block">
+    <div class="filter-block__header">
+        <label for="{{ id }}">{{ title }}</label>
+
+        <div class="filter-block__actions">
+            <button class="filter-block__btn filter-block__btn--select" data-target="{{ id }}">Выбрать все</button>
+            <button class="filter-block__btn filter-block__btn--clear" data-target="{{ id }}">Очистить</button>
+        </div>
+    </div>
+
+    <select id="{{ id }}" multiple>
+        {% for item in items %}
+            <option value="{{ item.id }}">
+                {{ item.title ?? item.name }}
+            </option>
+        {% endfor %}
+    </select>
+</div>

@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Repository\AuthorRepository;
 use App\Repository\BookRepository;
+use App\Repository\StoreRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,10 +14,16 @@ use Symfony\Component\Routing\Attribute\Route;
 final class BookController extends AbstractController
 {
     #[Route('/', name: 'app_book')]
-    public function index(): Response
+    public function index(BookRepository $bookRepository, AuthorRepository $authorRepository, StoreRepository $storeRepository): Response
     {
+        $books = $bookRepository->findAll();
+        $authors = $authorRepository->findAll();
+        $stores = $storeRepository->findAll();
+
         return $this->render('book/index.html.twig', [
-            'controller_name' => 'BookController',
+            'books' => $books,
+            'authors' => $authors,
+            'stores' => $stores
         ]);
     }
 
@@ -39,8 +47,8 @@ final class BookController extends AbstractController
                 'id' => $book->getId(),
                 'title' => $book->getTitle(),
                 'year' => $book->getYear(),
-                'authorIds' => array_map(fn($a) => $a->getId(), $book->getAuthors()->toArray()),
-                'storeIds' => array_map(fn($s) => $s->getId(), $book->getStores()->toArray()),
+                'authors' => array_map(fn($a) => ["id" => $a->getId(), "name" => $a->getName()], $book->getAuthors()->toArray()),
+                'stores' => array_map(fn($s) => ["id" => $s->getId(), "name" => $s->getName()], $book->getStores()->toArray()),
             ];
         }
 
