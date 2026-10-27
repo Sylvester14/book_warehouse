@@ -1,5 +1,21 @@
 
 services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD:-app_password}@database:5432/${POSTGRES_DB:-book_warehouse_db}?serverVersion=16&charset=utf8
+    volumes:
+      - .:/var/www/html
+      - /var/www/html/var/cache/
+      - /var/www/html/var/log/ 
+    depends_on:
+      database:
+        condition: service_healthy
+
 ###> doctrine/doctrine-bundle ###
   database:
     image: postgres:${POSTGRES_VERSION:-16}-alpine
