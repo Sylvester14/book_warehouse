@@ -23,13 +23,13 @@ docker compose up -d
 ### 3. Применение миграций базы данных
 Создайте необходимую структуру таблиц в базе данных внутри контейнера `web`:
 ```bash
-docker compose exec web php bin/console doctrine:migrations:migrate --no-interaction
+docker compose exec symfony php bin/console doctrine:migrations:migrate --no-interaction
 ```
 
 ### 4. Загрузка тестовых данных
 Наполните базу данных демонстрационными данными для тестирования:
 ```bash
-docker compose exec web php bin/console doctrine:fixtures:load --no-interaction
+docker compose exec -T database psql -U app -d book_warehouse_db < data/dump.sql  
 ```
 
 ---

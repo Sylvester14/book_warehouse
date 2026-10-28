@@ -1,24 +1,37 @@
 
 services:
-  web:
-    build:
-      context: .
-      dockerfile: Dockerfile
+  caddy: 
+    image: caddy:2-alpine
+    restart: unless-stopped
     ports:
       - "8080:80"
-    environment:
-      - DATABASE_URL=postgresql://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD:-app_password}@database:5432/${POSTGRES_DB:-book_warehouse_db}?serverVersion=16&charset=utf8
+      - "443:443"
     volumes:
-      - .:/var/www/html
-      - /var/www/html/var/cache/
-      - /var/www/html/var/log/ 
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - symfony_public:/var/www/symfony/public:ro
+      - caddy_data:/data
+      - caddy_config:/config
     depends_on:
-      database:
-        condition: service_healthy
+      - database
+      - symfony
+  
+  symfony:
+    build:
+      context: .
+      target: symfony_prod
+    container_name: book_warehouse_php
+    environment:
+      DATABASE_URL: "postgresql://app:app_password@database:5432/book_warehouse_db?serverVersion=16&charset=utf8"
+      APP_ENV: prod
+      APP_DEBUG: 0
+      APP_SECRET: 7b260b862861a426b364b92d7a727fe8
+    volumes:
+      - symfony_public:/var/www/symfony/public
 
 ###> doctrine/doctrine-bundle ###
   database:
     image: postgres:${POSTGRES_VERSION:-16}-alpine
+    container_name: book_warehouse_db
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-book_warehouse_db}
       # You should definitely change the password in production
@@ -36,6 +49,9 @@ services:
 ###< doctrine/doctrine-bundle ###
 
 volumes:
+  caddy_data:
+  caddy_config:
+  symfony_public:
 ###> doctrine/doctrine-bundle ###
   database_data:
 ###< doctrine/doctrine-bundle ###
