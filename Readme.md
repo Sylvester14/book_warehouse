@@ -42,7 +42,7 @@ cmd /c "docker compose exec -T database psql -U app -d book_warehouse_db < data/
 ### 5. Сброс кэша 
 Сразу после импорта данных обязательно сбросьте кэш Symfony, чтобы избежать конфликтов ORM Doctrine с новой базой данных:
 ```bash
-docker compose exec symfony php /bin/console cache:clear
+docker compose exec symfony php bin/console cache:clear
 ```
 ---
 
