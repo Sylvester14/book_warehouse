@@ -28,10 +28,22 @@ docker compose exec symfony php bin/console doctrine:migrations:migrate --no-int
 
 ### 4. Загрузка тестовых данных
 Наполните базу данных демонстрационными данными для тестирования:
+
+**Для Linux / macos / Windows (bash/zsh/cmd):**
 ```bash
 docker compose exec -T database psql -U app -d book_warehouse_db < data/dump.sql  
 ```
 
+**Для Windows (Powershell)**
+```powershell
+cmd /c "docker compose exec -T database psql -U app -d book_warehouse_db < data/dump.sql"
+```
+
+### 5. Сброс кэша 
+Сразу после импорта данных обязательно сбросьте кэш Symfony, чтобы избежать конфликтов ORM Doctrine с новой базой данных:
+```bash
+docker compose exec symfony php /bin/console cache:clear
+```
 ---
 
 ## 🔗 Доступ к приложению
